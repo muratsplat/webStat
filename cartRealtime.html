@@ -14,11 +14,12 @@ function countUserCart() {
     var options = {
 
       type    :"get",
-      url     : "http://127.0.0.1:8080/cpu",
+		// http://127.0.0.1:8080/
+      url     : document.URL +"cpu",
       dataType: "json",
     };
 
-    
+    console.log(document.URL);
     var requestCount = $.ajax(options);
 
     requestCount.done(function(response) {
