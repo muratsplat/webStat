@@ -26,7 +26,9 @@ $ cd StatOnWeb
 $ ./stat
 
 ```
-
+ScreenShot
+----------
+![example](https://github.com/MURATSPLAT/StatOnWeb/blob/master/screenshots/example.png)
 And than open 127.0.0.1:8080 by using a web browser. Now you can see the percent of cpu(s) usage at opened web page..
 
 License
