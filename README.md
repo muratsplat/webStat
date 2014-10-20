@@ -32,9 +32,4 @@ And than open 127.0.0.1:8080 by using a web browser. Now you can see the percent
 License
 --------
 Copyright (C) 2014 Murat ÖDÜNÇ  GPLv3
-murat.asya@gmail.com, http://muratodunc.wordpress.com
-
-
-
-
 
