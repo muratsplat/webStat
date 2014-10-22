@@ -20,6 +20,8 @@ $ go get github.com/MURATSPLAT/highLevelStat
 
 $ cd StatOnWeb
 
+$ go build stat.go
+
 $ ./stat
 
 ```
