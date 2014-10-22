@@ -4,12 +4,13 @@
     <script type="text/javascript" src="js/smoothie.js"></script>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <script type="text/javascript">
+
+
 var cpuUsage = 0;
-
-function countUserCart() {
-
-
- 
+/**
+ to get data on the service
+*/
+function getCpuUsage() { 
     //lets set ajax post options
     var options = {
 
@@ -19,7 +20,6 @@ function countUserCart() {
       dataType: "json",
     };
 
-    console.log(document.URL);
     var requestCount = $.ajax(options);
 
     requestCount.done(function(response) {
@@ -29,14 +29,11 @@ function countUserCart() {
        
       cpuUsage = parseInt(response.Value);
 
-      percentCPU.innerHTML= "CPU(s): " + cpuUsage + "%";
-      
-      
+      percentCPU.innerHTML= "CPU(s): " + cpuUsage + "%";      
 
     });
 
     requestCount.fail(function() {
-
 
     });
 
@@ -46,7 +43,7 @@ function countUserCart() {
       // Randomly add a data point every 500ms
       var random = new TimeSeries();
       setInterval(function() {
-        random.append(new Date().getTime(), countUserCart() );
+        random.append(new Date().getTime(), getCpuUsage() );
       }, 500);
       
       function createTimeline() {
@@ -58,13 +55,10 @@ function countUserCart() {
     </script>
   </head>
   <body onload="createTimeline()">
-
-    
-    <h3 id="percentCPU">CPU(s):100%</h3>
-
+   
+   <h3 id="percentCPU">CPU(s):0%</h3>
 
     <canvas id="chart" width="400" height="100"></canvas>
-
 
 
   </body>
