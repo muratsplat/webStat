@@ -5,85 +5,99 @@
 package main
 
 import (
-	"encoding/json"
-	"github.com/MURATSPLAT/highLevelStat"
-	"io"
+	_ "fmt"
+	"github.com/gorilla/websocket"
+	_ "github.com/muratsplat/highLevelStat"
+	_ "io"
 	"log"
 	"net/http"
+	_ "strconv"
 )
 
-type CpuJson struct {
-	Name  string
-	Value int
+type Cpu struct {
+	value string
+}
+
+type Mem struct {
+	value string
+}
+
+type Message struct {
+	Cpu
+
+	Mem
+}
+
+// Upgreder Structer on websocket library
+var upgrader = websocket.Upgrader{
+
+	ReadBufferSize: 1048,
+
+	WriteBufferSize: 1048,
+}
+
+var (
+	adressAndPort string = ":8080"
+
+	jsAppUrlPath string = "/js/app.js"
+
+	webSocketPath string = "/ws"
+)
+
+// WebSocket Handler
+func websocketHandler(w http.ResponseWriter, r *http.Request) {
+
+	conn, err := upgrader.Upgrade(w, r, nil)
+
+	if err != nil {
+
+		log.Println(err)
+
+		return
+	}
+
+	for {
+
+		messageType, p, err := conn.ReadMessage()
+
+		if err != nil {
+
+			return
+
+		}
+
+		log.Println(p)
+
+		if err = conn.WriteMessage(messageType, p); err != nil {
+
+			return
+		}
+	}
+
 }
 
 // to get the percent of cpu(s) usage
-func getCpuUsage() int {
-
-	var test highlevelstat.SystemStatus
-
-	return int(test.GetCpuUsage().CpuUsage)
-
-}
 
 func main() {
 	// getting Cpu Status Data
-	http.HandleFunc("/cpu", cpuStat)
+	http.HandleFunc(webSocketPath, websocketHandler)
 	// getting index file
 	http.HandleFunc("/", Index)
 	// getting Javascript library
-	http.HandleFunc("/js/smoothie.js", Js)
+	http.HandleFunc(jsAppUrlPath, Js)
 
-	http.ListenAndServe(":8080", nil)
-
-}
-
-// to get the percent of Cpu(s) usage by converting json format
-func cpuStat(res http.ResponseWriter, req *http.Request) {
-
-	res.Header().Set("Content-Type", "application/json")
-
-	var js CpuJson
-
-	js.setName("cpuUsage").setValue(getCpuUsage())
-
-	io.WriteString(res, js.getJson())
-
-}
-
-// setter for CpuJson Struct
-func (c *CpuJson) setName(s string) *CpuJson {
-
-	c.Name = s
-	return c
-
-}
-
-// getter for CpuJson Struct
-func (c *CpuJson) setValue(s int) *CpuJson {
-
-	c.Value = s
-
-	return c
-}
-
-// to return json format
-func (c *CpuJson) getJson() string {
-
-	b, _ := json.Marshal(c)
-
-	return string(b)
+	http.ListenAndServe(adressAndPort, nil)
 
 }
 
 // handler for Index file
 func Index(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "cartRealtime.html")
+	http.ServeFile(w, r, "index.html")
 	log.Print("index called")
 }
 
 // handler for js file..
 func Js(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "js/smoothie.js")
-	log.Print("smoothie.js called")
+	http.ServeFile(w, r, "js/app.js")
+	log.Print("app.js called")
 }
