@@ -12,6 +12,19 @@ import (
 	"log"
 	"net/http"
 	_ "strconv"
+	_ "unicode/utf8"
+)
+
+// source: https://github.com/gorilla/websocket/blob/master/examples/chat/conn.go
+const (
+	// Time allowed to write a message to the peer.
+	writeWait = 10 * time.Second
+	// Time allowed to read the next pong message from the peer.
+	pongWait = 60 * time.Second
+	// Send pings to peer with this period. Must be less than pongWait.
+	pingPeriod = (pongWait * 9) / 10
+	// Maximum message size allowed from peer.
+	maxMessageSize = 512
 )
 
 type Cpu struct {
@@ -49,6 +62,8 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 
+	conn.SetPingHander(func(st) error)
+
 	if err != nil {
 
 		log.Println(err)
@@ -66,8 +81,9 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 		}
 
-		log.Println(p)
+		log.Println("Message: ", string(p))
 
+		log.Println("Type: ", messageType)
 		if err = conn.WriteMessage(messageType, p); err != nil {
 
 			return

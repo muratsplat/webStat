@@ -14,11 +14,11 @@ How to installs and works
 
 ```sh
 
-$ git clone https://github.com/MURATSPLAT/StatOnWeb.git
+$ git clone https://github.com/muratsplat/webStat.git
 
-$ go get github.com/MURATSPLAT/highLevelStat
+$ go get github.com/muratsplat/highLevelStat
 
-$ cd StatOnWeb
+$ cd webStat
 
 $ go build stat.go
 
@@ -32,7 +32,7 @@ And than open 127.0.0.1:8080 by using a web browser. Now you can see the percent
 
 Thanks To
 ---------
-smoothiecharts.org
+
 
 
 License
