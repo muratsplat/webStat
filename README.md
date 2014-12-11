@@ -4,7 +4,7 @@ StatOnWeb
 This app simply is web service. This service gives about the information of system which is the app works on.
 
 
-I'm new in Go Language and this library is my first library in go. I want to improve my go skils by writing go code more and more.
+I'm new in Go Language and this library is my first app in go. I want to improve my go skils by writing go code more and more.
 
 
 Probably I will not support the package at long term support.

@@ -6,23 +6,26 @@ package main
 
 import (
 	_ "fmt"
-	"github.com/gorilla/websocket"
 	_ "github.com/muratsplat/highLevelStat"
 	_ "io"
 	"log"
 	"net/http"
-	_ "strconv"
-	_ "unicode/utf8"
+	"time"
+
+	"github.com/gorilla/websocket"
 )
 
 // source: https://github.com/gorilla/websocket/blob/master/examples/chat/conn.go
 const (
 	// Time allowed to write a message to the peer.
-	writeWait = 10 * time.Second
+	writeWait = 5 * time.Second
+
 	// Time allowed to read the next pong message from the peer.
 	pongWait = 60 * time.Second
+
 	// Send pings to peer with this period. Must be less than pongWait.
 	pingPeriod = (pongWait * 9) / 10
+
 	// Maximum message size allowed from peer.
 	maxMessageSize = 512
 )
@@ -57,12 +60,65 @@ var (
 	webSocketPath string = "/ws"
 )
 
+//
+func writerStat(ws *websocket.Conn) {
+
+	testMsg := []byte("test 121212")
+
+	pingTicker := time.NewTicker(pingPeriod)
+
+	// let's don't forgetting to close the connection
+	defer func() {
+
+		pingTicker.Stop()
+
+		ws.Close()
+	}()
+	// setting deadline
+	ws.SetWriteDeadline(time.Now().Add(writeWait))
+
+	err := ws.WriteMessage(websocket.TextMessage, testMsg)
+
+	if err != nil {
+
+		log.Println("Error: It could not sended message to client!")
+
+	}
+
+}
+
+// Simple reader for the required rule of  websocket
+func reader(ws *websocket.Conn) {
+
+	// for not forgetting to close the connection
+	defer ws.Close()
+
+	ws.SetReadLimit(512) // byte
+	ws.SetReadDeadline(time.Now().Add(pongWait))
+	ws.SetPongHandler(func(string) error {
+
+		ws.SetReadDeadline(time.Now().Add(pongWait))
+
+		return nil
+	})
+
+	for {
+
+		_, _, err := ws.ReadMessage()
+
+		if err != nil {
+
+			break
+
+		}
+
+	}
+}
+
 // WebSocket Handler
 func websocketHandler(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := upgrader.Upgrade(w, r, nil)
-
-	conn.SetPingHander(func(st) error)
 
 	if err != nil {
 
@@ -71,25 +127,9 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	for {
+	go writerStat(conn)
 
-		messageType, p, err := conn.ReadMessage()
-
-		if err != nil {
-
-			return
-
-		}
-
-		log.Println("Message: ", string(p))
-
-		log.Println("Type: ", messageType)
-		if err = conn.WriteMessage(messageType, p); err != nil {
-
-			return
-		}
-	}
-
+	reader(conn)
 }
 
 // to get the percent of cpu(s) usage
