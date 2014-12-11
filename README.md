@@ -1,4 +1,4 @@
-StatOnWeb
+webStat
 =============
 
 This app simply is web service. This service gives about the information of system which is the app works on.
