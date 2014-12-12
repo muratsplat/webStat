@@ -5,11 +5,11 @@
 package main
 
 import (
-	_ "fmt"
-	_ "github.com/muratsplat/highLevelStat"
+	"github.com/muratsplat/highLevelStat"
 	_ "io"
 	"log"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/gorilla/websocket"
@@ -18,30 +18,27 @@ import (
 // source: https://github.com/gorilla/websocket/blob/master/examples/chat/conn.go
 const (
 	// Time allowed to write a message to the peer.
-	writeWait = 5 * time.Second
+	writeWait = 1 * time.Second
 
 	// Time allowed to read the next pong message from the peer.
-	pongWait = 60 * time.Second
+	pongWait = 10000 * time.Second
 
 	// Send pings to peer with this period. Must be less than pongWait.
 	pingPeriod = (pongWait * 9) / 10
 
 	// Maximum message size allowed from peer.
-	maxMessageSize = 512
+	maxMessageSize = 1024
 )
 
-type Cpu struct {
-	value string
-}
-
-type Mem struct {
-	value string
-}
-
+// Simple Message Data Structer
 type Message struct {
-	Cpu
+	Type int
 
-	Mem
+	Name string
+
+	Value string
+
+	Time int64
 }
 
 // Upgreder Structer on websocket library
@@ -52,18 +49,89 @@ var upgrader = websocket.Upgrader{
 	WriteBufferSize: 1048,
 }
 
+// Configurations
 var (
 	adressAndPort string = ":8080"
 
 	jsAppUrlPath string = "/js/app.js"
 
 	webSocketPath string = "/ws"
+
+	timeOfRangeStat time.Duration = time.Millisecond * 100 // 1 second
 )
+
+// Types Of Message
+const (
+	sysStat = 9
+)
+
+// System CPU(s) Status Updater
+func cpuUpdater(c chan<- Message) {
+	// setting delay
+	highlevelstat.SetTimeOfRangeForCpuStat(timeOfRangeStat / 2)
+
+	var msg Message
+
+	msg.Type = sysStat
+
+	msg.Name = "cpu"
+
+	for {
+
+		cpu := highlevelstat.NewCpuUsage()
+
+		msg.Value = float32ToString(cpu.CpuUsage)
+
+		msg.Time = time.Now().Unix()
+		// sending a message that includes cpu status
+		// to channel
+		log.Println(msg)
+		c <- msg
+
+	}
+}
+
+//  System Memory Status Updater
+func memUpdater(c chan<- Message) {
+
+	var msg Message
+
+	msg.Type = sysStat
+
+	msg.Name = "mem"
+
+	for {
+
+		mem := highlevelstat.NewMemInfo()
+
+		msg.Value = float32ToString(mem.UsedMemForHuman())
+
+		msg.Time = time.Now().Unix()
+		// sending the message to channel
+		log.Println(msg)
+		c <- msg
+
+		time.Sleep(timeOfRangeStat)
+	}
+
+}
+
+// simple string converter helper for float32 types
+func float32ToString(f float32) string {
+
+	return strconv.FormatFloat(float64(f), 'f', 2, 32)
+}
 
 //
 func writerStat(ws *websocket.Conn) {
 
-	testMsg := []byte("test 121212")
+	cpuChan := make(chan Message)
+
+	memChan := make(chan Message)
+
+	// starting methods
+	go cpuUpdater(cpuChan)
+	go memUpdater(memChan)
 
 	pingTicker := time.NewTicker(pingPeriod)
 
@@ -74,15 +142,30 @@ func writerStat(ws *websocket.Conn) {
 
 		ws.Close()
 	}()
-	// setting deadline
-	ws.SetWriteDeadline(time.Now().Add(writeWait))
 
-	err := ws.WriteMessage(websocket.TextMessage, testMsg)
+	for {
 
-	if err != nil {
+		select {
 
-		log.Println("Error: It could not sended message to client!")
+		case cpu := <-cpuChan:
 
+			ws.SetWriteDeadline(time.Now().Add(writeWait))
+
+			if err := ws.WriteJSON(cpu); err != nil {
+
+				log.Println("JSON data[CPU] could not sended to clilent")
+			}
+
+		case mem := <-memChan:
+
+			ws.SetWriteDeadline(time.Now().Add(writeWait))
+
+			if err := ws.WriteJSON(mem); err != nil {
+
+				log.Println("JSON data[MEM] could not sended to clilent")
+			}
+
+		}
 	}
 
 }
@@ -137,6 +220,7 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// getting Cpu Status Data
 	http.HandleFunc(webSocketPath, websocketHandler)
+
 	// getting index file
 	http.HandleFunc("/", Index)
 	// getting Javascript library

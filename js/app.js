@@ -46,7 +46,28 @@
 			};
 
 			socket.onmessage= function(event) {
-					console.log(event.data);	
+				
+               console.log(event.data);
+
+                   var jsonObj = JSON.parse(event.data);
+
+                   switch (jsonObj.Name) {
+
+                       case "cpu":
+
+                           window.document.cpuUpdater(jsonObj.Value);
+
+                            break;
+
+                       case "mem":
+                            
+                            window.document.memUpdater(jsonObj.Value);
+
+                            break;                   
+                   
+                   }
+    
+                                        
 			};
 
 			window['socket'] = socket;
@@ -59,6 +80,30 @@
 
 		
 	}
+
+    window.document['cpuUpdater'] = function() {
+
+        var refs = window.document.getElementById('cpu');
+
+        refs.innerHTML = "%" + arguments[0];
+        
+        return;    
+    
+    }
+
+     window.document['memUpdater'] = function() {
+
+        var refs = window.document.getElementById('mem');
+
+        refs.innerHTML = "%"+ arguments[0];
+        
+        return;    
+    
+    }
+
+
+
+
 
 	
 }
