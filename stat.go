@@ -57,7 +57,7 @@ var (
 
 	webSocketPath string = "/ws"
 
-	timeOfRangeStat time.Duration = time.Millisecond * 100 // 1 second
+	timeOfRangeStat time.Duration = time.Millisecond * 500 // 1 second
 )
 
 // Types Of Message
@@ -187,7 +187,9 @@ func reader(ws *websocket.Conn) {
 
 	for {
 
-		_, _, err := ws.ReadMessage()
+		tty, _, err := ws.ReadMessage()
+
+		log.Println("Proto: ", tty)
 
 		if err != nil {
 

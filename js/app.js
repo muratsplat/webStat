@@ -38,10 +38,6 @@
 			socket.onopen =  function() {
 
 				console.log("Connection is live!");
-
-				socket.send("Echo, alfa, teda, and beta!");
-				
-				console.log("Now a message was sended to server!");
 								
 			};
 
@@ -81,7 +77,8 @@
 		
 	}
 
-    window.document['cpuUpdater'] = function() {
+    //Cpu Updater 
+    window.document.cpuUpdater = function() {
 
         var refs = window.document.getElementById('cpu');
 
@@ -91,7 +88,8 @@
     
     }
 
-     window.document['memUpdater'] = function() {
+    // Mem Updater
+     window.document.memUpdater = function() {
 
         var refs = window.document.getElementById('mem');
 
@@ -100,6 +98,13 @@
         return;    
     
     }
+
+     // Connection Status Updater
+     
+     window.document.connStatUpdater = function() {
+
+        var refs = window.document.getElementById("conStat")
+     }
 
 
 
