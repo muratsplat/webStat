@@ -9,11 +9,6 @@
  */
 (function(window) {
 
-	
-
-	var socketRef = null;
-
-
 	// when DOM is ready
 	window.onload= function() {
 
@@ -33,11 +28,17 @@
 				
 				console.error("WebSocket is failed");
 
+                window.document.connStatUpdater(0);
+
+
 			};
 
 			socket.onopen =  function() {
 
 				console.log("Connection is live!");
+
+                window.document.connStatUpdater(1);
+
 								
 			};
 
@@ -66,9 +67,11 @@
                                         
 			};
 
-			window['socket'] = socket;
+			window.socket = socket;
 			
 		} catch(Error) {
+            
+           window.document.connStatUpdater(0);
 
 			console.warn(Error);
 		
@@ -100,21 +103,19 @@
     }
 
      // Connection Status Updater
-     
-     window.document.connStatUpdater = function() {
+     window.document.connStatUpdater = function(arg) {
 
         var refs = window.document.getElementById("conStat")
-     }
 
+        var off = "Offline";
 
+        var on = "Online";
 
-
+        refs.innerHTML = (arg === 1)  ? on : off; 
+    }
 
 	
 }
  
  (window));
-
-
-
 
