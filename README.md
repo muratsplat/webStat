@@ -35,6 +35,7 @@ $ ./stat
 ScreenShot
 ----------
 ![example](https://github.com/muratsplat/webStat/blob/master/screenshots/webstat.gif)
+
 And than open 127.0.0.1:8080 by using a web browser. Now you can see the percent of cpu(s) usage at opened web page in real time..
 
 Todos
