@@ -39,13 +39,14 @@ And than open 127.0.0.1:8080 by using a web browser. Now you can see the percent
 
 Todos
 ----
-* add pinger feature to client side
-* change pinger and ponger feature to server side
-* add simple test methods
+* pinger and ponger features to client side
+* pinger and ponger features to server side
+* login and authorization to limit access
+* simple test methods
 
 Thanks To
 ---------
-Gorilla Team for websocket
+[Gorilla Team](https://github.com/gorilla/websocket) for websocket
 
 License
 --------
