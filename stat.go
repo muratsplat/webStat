@@ -57,7 +57,7 @@ var (
 
 	webSocketPath string = "/ws"
 
-	timeOfRangeStat time.Duration = time.Millisecond * 100 // 1 second
+	timeOfRangeStat time.Duration = time.Millisecond * 500 // 1 second
 )
 
 // Types Of Message
@@ -122,14 +122,14 @@ func float32ToString(f float32) string {
 	return strconv.FormatFloat(float64(f), 'f', 2, 32)
 }
 
-//
+// let's writer collected data on the connection structer
 func writerStat(ws *websocket.Conn) {
 
 	cpuChan := make(chan Message)
 
 	memChan := make(chan Message)
 
-	// starting methods
+	// starting channels
 	go cpuUpdater(cpuChan)
 	go memUpdater(memChan)
 
@@ -187,7 +187,9 @@ func reader(ws *websocket.Conn) {
 
 	for {
 
-		_, _, err := ws.ReadMessage()
+		tty, _, err := ws.ReadMessage()
+
+		log.Println("Proto: ", tty)
 
 		if err != nil {
 
@@ -223,7 +225,8 @@ func main() {
 
 	// getting index file
 	http.HandleFunc("/", Index)
-	// getting Javascript library
+
+	// getting Javascript library and other assets
 	http.HandleFunc(jsAppUrlPath, Js)
 
 	http.ListenAndServe(adressAndPort, nil)

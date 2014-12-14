@@ -1,6 +1,5 @@
 /* 
- * App Js Codes
- * 
+ * WebSocket Client 
  *
  * Copyright (C) 2014 Murat Ödünç
  *
@@ -8,11 +7,6 @@
  * @license GPL 3.0
  */
 (function(window) {
-
-	
-
-	var socketRef = null;
-
 
 	// when DOM is ready
 	window.onload= function() {
@@ -31,7 +25,10 @@
 			// adding onerror event
 			socket.onerror=  function() {
 				
-				console.error("WebSocket is failed");
+                 console.error("WebSocket is failed");
+
+                 window.document.connStatUpdater(0);
+
 
 			};
 
@@ -39,9 +36,8 @@
 
 				console.log("Connection is live!");
 
-				socket.send("Echo, alfa, teda, and beta!");
-				
-				console.log("Now a message was sended to server!");
+                window.document.connStatUpdater(1);
+
 								
 			};
 
@@ -70,9 +66,11 @@
                                         
 			};
 
-			window['socket'] = socket;
+			window.socket = socket;
 			
 		} catch(Error) {
+            
+           window.document.connStatUpdater(0);
 
 			console.warn(Error);
 		
@@ -81,7 +79,8 @@
 		
 	}
 
-    window.document['cpuUpdater'] = function() {
+    //Cpu Updater 
+    window.document.cpuUpdater = function() {
 
         var refs = window.document.getElementById('cpu');
 
@@ -91,7 +90,8 @@
     
     }
 
-     window.document['memUpdater'] = function() {
+    // Mem Updater
+     window.document.memUpdater = function() {
 
         var refs = window.document.getElementById('mem');
 
@@ -101,15 +101,20 @@
     
     }
 
+     // Connection Status Updater
+     window.document.connStatUpdater = function(arg) {
 
+        var refs = window.document.getElementById("conStat")
 
+        var off = "Offline";
 
+        var on = "Online";
+
+        refs.innerHTML = (arg === 1)  ? on : off; 
+    }
 
 	
 }
  
  (window));
-
-
-
 
