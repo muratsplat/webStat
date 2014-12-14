@@ -1,6 +1,5 @@
 /* 
- * App Js Codes
- * 
+ * WebSocket Client 
  *
  * Copyright (C) 2014 Murat Ödünç
  *
@@ -26,9 +25,9 @@
 			// adding onerror event
 			socket.onerror=  function() {
 				
-				console.error("WebSocket is failed");
+                 console.error("WebSocket is failed");
 
-                window.document.connStatUpdater(0);
+                 window.document.connStatUpdater(0);
 
 
 			};

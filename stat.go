@@ -122,14 +122,14 @@ func float32ToString(f float32) string {
 	return strconv.FormatFloat(float64(f), 'f', 2, 32)
 }
 
-//
+// let's writer collected data on the connection structer
 func writerStat(ws *websocket.Conn) {
 
 	cpuChan := make(chan Message)
 
 	memChan := make(chan Message)
 
-	// starting methods
+	// starting channels
 	go cpuUpdater(cpuChan)
 	go memUpdater(memChan)
 
@@ -225,7 +225,8 @@ func main() {
 
 	// getting index file
 	http.HandleFunc("/", Index)
-	// getting Javascript library
+
+	// getting Javascript library and other assets
 	http.HandleFunc(jsAppUrlPath, Js)
 
 	http.ListenAndServe(adressAndPort, nil)
