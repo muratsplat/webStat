@@ -1,0 +1,28 @@
+{
+  "name": "webStat",
+  "version": "1.1.0",
+  "description": "A client for webstat",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muratsplat/webStat.git"
+  },
+  "keywords": [
+    "System",
+    "Status",
+    "web",
+    "app"
+  ],
+  "author": "Murat Ödünç",
+  "license": "GPLv3",
+  "bugs": {
+    "url": "https://github.com/muratsplat/webStat/issues"
+  },
+  "homepage": "https://github.com/muratsplat/webStat",
+  "devDependencies": {
+    "gulp-sass": "^2.0.4"
+  }
+}
