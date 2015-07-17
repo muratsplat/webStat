@@ -24,6 +24,7 @@
   "homepage": "https://github.com/muratsplat/webStat",
   "devDependencies": {
     "gulp-babel": "^5.1.0",
-    "gulp-sass": "^2.0.4"
+    "gulp-sass": "^2.0.4",
+    "mocha": "^2.2.5"
   }
 }
