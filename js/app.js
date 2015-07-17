@@ -72,8 +72,7 @@
             
            window.document.connStatUpdater(0);
 
-			console.warn(Error);
-		
+			console.warn(Error);	
 		}
 
 		
