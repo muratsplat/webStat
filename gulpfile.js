@@ -1,7 +1,8 @@
 'use strict';
 
-var gulp = require('gulp');
-var sass = require('gulp-sass');
+var gulp		= require('gulp');
+var sass		= require('gulp-sass');
+var sourcemaps	= require('gulp-sourcemaps');
 
 /*
  * SASS TASK
@@ -9,7 +10,9 @@ var sass = require('gulp-sass');
 gulp.task('sass', function() {
 
 	gulp.src('./resources/assets/sass/*.scss')
-		.pipe(sass().on('error', sass.logError))
+		.pipe(sourcemaps.init())
+		.pipe(sass({outputStyle: 'compressed'}).on('error', sass.logError))
+		.pipe(sourcemaps.write())
 		.pipe(gulp.dest('./resources/assets/css'));
 
 });
