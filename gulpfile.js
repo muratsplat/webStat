@@ -13,12 +13,14 @@ var browserify	= require('browserify');
 var source		= require('vinyl-source-stream');
 var buffer		= require('gulp-buffer');
 var gutil		= require('gulp-util');
+var jshint		= require('gulp-jshint');
+var stylish		= require('jshint-stylish');
 
 /*
  * Directories paths
  */
 var jsDist	= './resources/js/dist';
-var jsSrc	= ['./resources/js/src/*.js'];
+var jsSrc	= ['./resources/js/src/*.js','./resources/js/src/modules/*.js'];
 var cssDest	= './resources/assets/css'; 
 var sassSrc	= './resources/assets/sass';
 
@@ -62,20 +64,31 @@ gulp.task('build', function() {
 				.pipe(gulp.dest(jsDist));
 });
 
+/**
+ * Check syntax
+ */
+gulp.task('check', function() {
+
+	return gulp.src(jsSrc)
+			.pipe(jshint({
+				esnext : true,
+			}))
+			.pipe(jshint.reporter(stylish));
+ });
 
 /**
  * To watch js files
  */
 gulp.task('js:watch', function() {
 
-	gulp.watch(jsSrc + '/*.js', ['buildJs']);
+	gulp.watch([jsSrc], ['check', 'build']);
 
 });
 
 /**
  * Default Task
  */
-gulp.task('default', ['sass',  'build']);
+gulp.task('default', ['sass', 'check',  'build']);
 
 /**
  * Watch all of it"

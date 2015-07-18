@@ -1,7 +1,7 @@
 //main.js
 import fooClass from "./modules/foo.js";
 
-var foo  = new fooClass
+var foo  = new fooClass();
 
 var mesg = foo.whoAreYou();
 
