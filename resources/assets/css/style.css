@@ -1,0 +1,59 @@
+/* 
+ * This file includes SASS syntax which is CSS Extention language.
+ * This file needs to compile by a SASS compiler for converting 
+ * to native CSS file. 
+ */
+@import url(http://fonts.googleapis.com/css?family=Open+Sans:400,600);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu);
+body {
+  background-color: #202323;
+  margin: 2em; }
+
+h1 {
+  color: #BE4CFF;
+  font-family: Open Sans, sans-serif;
+  font-size: 30pt;
+  font-weight: 600;
+  margin-top: -0.7em;
+  margin-bottom: -1.3em; }
+
+h2 {
+  color: #40DAF2;
+  font-family: Open Sans, sans-serif;
+  font-weight: 400; }
+
+footer {
+  color: antiquewhite;
+  font-family: Open Sans, sans-serif; }
+
+b {
+  color: chartreuse;
+  font-family: Open Sans, sans-serif; }
+
+p {
+  color: bisque;
+  font-family: Ubuntu, sans-serif;
+  font-weight: 400;
+  font-size: 5em;
+  margin-top: -0.3em;
+  padding-left: 0.3em; }
+
+div {
+  padding: 5px;
+  margin: 3px;
+  margin-top: -0.1em; }
+
+.tmpItem {
+  margin-bottom: -4em;
+  margin-top: -1em; }
+
+.content {
+  border: 3px dashed #FF003A;
+  margin: 30px;
+  padding: 15px; }
+
+a {
+  text-decoration: none !important;
+  font-family: Open Sans, sans-serif;
+  font-size: 30pt;
+  color: #BE4CFF; }
