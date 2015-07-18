@@ -52,9 +52,8 @@ var upgrader = websocket.Upgrader{
 // Configurations
 var (
 	adressAndPort string = ":8080"
-
-	jsAppUrlPath string = "/js/app.js"
-
+	jsAppUrlPath  string = "/js/app.js"
+	cssPath       string = "/resources/assets/css/style.css"
 	webSocketPath string = "/ws"
 
 	timeOfRangeStat time.Duration = time.Millisecond * 500 // 1 second
@@ -229,6 +228,9 @@ func main() {
 	// getting Javascript library and other assets
 	http.HandleFunc(jsAppUrlPath, Js)
 
+	// CSS file routes is registered
+	http.HandleFunc(cssPath, cssHander)
+
 	http.ListenAndServe(adressAndPort, nil)
 
 }
@@ -243,4 +245,10 @@ func Index(w http.ResponseWriter, r *http.Request) {
 func Js(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "js/app.js")
 	log.Print("app.js called")
+}
+
+// Handler for Style.css
+func cssHander(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "resources/assets/css/style.css")
+	log.Print("style.css is called")
 }
