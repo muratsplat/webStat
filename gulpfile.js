@@ -18,7 +18,7 @@ var gutil		= require('gulp-util');
  * Directories paths
  */
 var jsDist	= './resources/js/dist';
-var jsSrc	= ['./resources/js/src/modules/*.js','./resources/js/src/*.js'];
+var jsSrc	= ['./resources/js/src/*.js'];
 var cssDest	= './resources/assets/css'; 
 var sassSrc	= './resources/assets/sass';
 
@@ -42,20 +42,11 @@ gulp.task('sass:watch', function(){
 	gulp.watch(sassSrc + '/*.scss', ['sass']);	
 });
 
+
 /**
- * To buid js file via babel builder
+ * To convert ES5 and generate modules
  */
-gulp.task('buildJs', function () {
-
-	return gulp.src(jsSrc)
-			.pipe(babel())
-			.pipe(concat('all.js'))
-			.pipe(gulp.dest(jsDist));
-			
-});
-
-
-gulp.task('modules', function() {
+gulp.task('build', function() {
 
 	    return browserify({			    
 					entries: './resources/js/src/app.js',
@@ -68,13 +59,6 @@ gulp.task('modules', function() {
 				.pipe(uglify())
 				.on('error', gutil.log)
 				.pipe(sourcemaps.write('.'))
-				.pipe(gulp.dest(jsDist));
-});
-
-gulp.task('compress', function() {
-	
-	return gulp.src(jsDist + '/all.js')
-				.pipe(uglify())
 				.pipe(gulp.dest(jsDist));
 });
 
@@ -91,7 +75,7 @@ gulp.task('js:watch', function() {
 /**
  * Default Task
  */
-gulp.task('default', ['sass', 'buildJs', 'modules']);
+gulp.task('default', ['sass',  'build']);
 
 /**
  * Watch all of it"
