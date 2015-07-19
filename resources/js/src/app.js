@@ -1,8 +1,25 @@
-//main.js
-import fooClass from "./modules/foo.js";
+/**
+ * Main file
+ */
 
-var foo  = new fooClass();
+// importing modules..
+import connection from "./modules/websocket.js";
 
-var mesg = foo.whoAreYou();
 
-console.log(mesg);
+(function(win, socket, connection) {
+
+		var port		= win.location.port;
+
+		var hostname	= win.location.hostname;
+		
+		var console		= win.console;
+		
+		var live		= new connection(console, socket, hostname, port);
+
+		win.webStat		= live;
+
+
+
+
+})(window, WebSocket,connection); 
+

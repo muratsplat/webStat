@@ -6,7 +6,7 @@ package main
 
 import (
 	"github.com/muratsplat/highLevelStat"
-	_ "io"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -52,8 +52,9 @@ var upgrader = websocket.Upgrader{
 // Configurations
 var (
 	adressAndPort string = ":8080"
-	jsAppUrlPath  string = "/js/app.js"
-	cssPath       string = "/resources/assets/css/style.css"
+	jsAppUrlPath  string = "/assets/js/bundle.js"
+	jsAppMapPath  string = "/assets/js/bundle.js.map"
+	cssPath       string = "/assets/css/style.css"
 	webSocketPath string = "/ws"
 
 	timeOfRangeStat time.Duration = time.Millisecond * 500 // 1 second
@@ -222,14 +223,17 @@ func main() {
 	// getting Cpu Status Data
 	http.HandleFunc(webSocketPath, websocketHandler)
 
-	// getting index file
-	http.HandleFunc("/", Index)
-
 	// getting Javascript library and other assets
 	http.HandleFunc(jsAppUrlPath, Js)
 
+	// getting map for builded js file
+	http.HandleFunc(jsAppMapPath, jsMap)
+
 	// CSS file routes is registered
 	http.HandleFunc(cssPath, cssHander)
+
+	// getting index file
+	http.HandleFunc("/", Index)
 
 	http.ListenAndServe(adressAndPort, nil)
 
@@ -243,12 +247,23 @@ func Index(w http.ResponseWriter, r *http.Request) {
 
 // handler for js file..
 func Js(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "js/app.js")
-	log.Print("app.js called")
+
+	http.ServeFile(w, r, "resources/js/dist/bundle.js")
+	log.Print("bundle.js is called")
+}
+
+// Hander for js map file..
+func jsMap(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "resources/js/dist/bundle.js.map")
+	log.Print("build.j.map is called.")
 }
 
 // Handler for Style.css
 func cssHander(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "resources/assets/css/style.css")
 	log.Print("style.css is called")
+}
+
+func HelloServer(w http.ResponseWriter, req *http.Request) {
+	io.WriteString(w, "hello, world!\n")
 }
