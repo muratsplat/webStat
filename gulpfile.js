@@ -4,7 +4,6 @@ var gulp		= require('gulp');
 var sass		= require('gulp-sass');
 var sourcemaps	= require('gulp-sourcemaps');
 var babel		= require('gulp-babel');
-var concat	    = require('gulp-concat');
 var uglify		= require('gulp-uglify');
 var rename		= require("gulp-rename");
 //var del			= require('del');
@@ -97,11 +96,9 @@ gulp.task('js:watch', function() {
 	// adds jasmine test directories
 	jsSrc.push('./resources/js/src/spec/**/*.js');
 
-	gulp.watch([jsSrc], ['check', 'test']);
+	gulp.watch([jsSrc], ['check','test']);
 
 });
-
-
 
 /**
  * Default Task
