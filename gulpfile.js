@@ -24,6 +24,19 @@ var jsDist	= './resources/js/dist';
 var jsSrc	= ['./resources/js/src/*.js','./resources/js/src/modules/*.js'];
 var cssDest	= './resources/assets/css'; 
 var sassSrc	= './resources/assets/sass';
+var jsSpec	= ['./resources/js/src/spec/module/*.js', './resources/js/src/spec/*.js'];
+
+// merged all js paths
+var allJs	= (function(specs, srcs) {
+
+	for (var i = 0, len = specs.length; i < len; i++) {
+
+		srcs.push(specs[i]);		
+	}
+
+	return srcs;
+
+})(jsSpec, jsSrc);
 
 /*
  * SASS TASK
@@ -70,7 +83,7 @@ gulp.task('build', function() {
  */
 gulp.task('check', function() {
 
-	return gulp.src(jsSrc)
+	return gulp.src(allJs)
 			.pipe(jshint({
 				esnext : true,
 			}))
@@ -79,12 +92,16 @@ gulp.task('check', function() {
 
 /**
  * Test Task
- *
  */
 gulp.task('test', function () {
-	
-   	return gulp.src('./resources/js/src/spec/**/*.js')
-	        .pipe(jasmine());
+
+	var options = {
+
+			verbose :true,
+	};
+
+   	return gulp.src(jsSpec)
+	        .pipe(jasmine(options));
 });
 
 
@@ -93,10 +110,7 @@ gulp.task('test', function () {
  */
 gulp.task('js:watch', function() {
 
-	// adds jasmine test directories
-	jsSrc.push('./resources/js/src/spec/**/*.js');
-
-	gulp.watch([jsSrc], ['check','test']);
+	gulp.watch(allJs, ['check','test']);
 
 });
 

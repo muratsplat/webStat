@@ -13,12 +13,12 @@ class Connection extends Logger {
 	 */
 	constructor(console, driver, hostname, port, path) {
 		
-		super(console);
-
+		super(console);			
+		
 		this.hostname	= hostname || 'localhost';
 		this.port		= port || 80;
 		this.path		= path || 'ws';
-		this.driver		= driver || WebSocket;
+		this.driver		= driver || {} ;
 		
 		// connection to server side
 		this.makeConnection();
@@ -77,6 +77,11 @@ class Connection extends Logger {
 	 * @return int
 	 */
 	getReadyState() {
+
+		if (typeof this.connection === 'undefined') {
+
+			return null;
+		}
 
 		return this.connection.readyState;
 	}
