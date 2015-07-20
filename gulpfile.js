@@ -15,6 +15,8 @@ var buffer		= require('gulp-buffer');
 var gutil		= require('gulp-util');
 var jshint		= require('gulp-jshint');
 var stylish		= require('jshint-stylish');
+var babel		= require('babel/register');
+var mocha		= require('gulp-mocha');
 
 /*
  * Directories paths
@@ -75,6 +77,19 @@ gulp.task('check', function() {
 			}))
 			.pipe(jshint.reporter(stylish));
  });
+
+/**
+ * Unit Test
+ */
+gulp.task('test', function () {
+	
+	return gulp.src('./resources/js/src/test/**/*.js', {read: false})
+				.pipe(mocha({reporter: 'nyan'}));
+});
+
+gulp.task('test', function () {
+
+});
 
 /**
  * To watch js files
