@@ -16,7 +16,7 @@ var gutil		= require('gulp-util');
 var jshint		= require('gulp-jshint');
 var stylish		= require('jshint-stylish');
 var babel		= require('babel/register');
-var mocha		= require('gulp-mocha');
+var jasmine		= require('gulp-jasmine');
 
 /*
  * Directories paths
@@ -79,31 +79,34 @@ gulp.task('check', function() {
  });
 
 /**
- * Unit Test
+ * Test Task
+ *
  */
 gulp.task('test', function () {
 	
-	return gulp.src('./resources/js/src/test/**/*.js', {read: false})
-				.pipe(mocha({reporter: 'nyan'}));
+   	return gulp.src('./resources/js/src/spec/**/*.js')
+	        .pipe(jasmine());
 });
 
-gulp.task('test', function () {
-
-});
 
 /**
  * To watch js files
  */
 gulp.task('js:watch', function() {
 
-	gulp.watch([jsSrc], ['check', 'build']);
+	// adds jasmine test directories
+	jsSrc.push('./resources/js/src/spec/**/*.js');
+
+	gulp.watch([jsSrc], ['check', 'test']);
 
 });
+
+
 
 /**
  * Default Task
  */
-gulp.task('default', ['sass', 'check',  'build']);
+gulp.task('default', ['sass', 'check',  'build', 'test']);
 
 /**
  * Watch all of it"
