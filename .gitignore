@@ -1,4 +1,6 @@
 node_modules
 *.swp
 webStat
+resources/js/dist/*
+resources/assets/css/*
 
