@@ -25,14 +25,16 @@ describe('SocketCon Simmple Test', () => {
 		connection  = new SocketCon(console);
 	});
 	
-	it('Not enough args for the constructor', () => {
+	it('With not valid websocket driver', () => {
 	
 		connection  = new SocketCon(console,driver, hostname, port, path );
 
 		expect(connection.getReadyState()).toBe(null);
-		//expect(connection.isClosed()).toBe(false);
-		
+		expect(connection.isClosed()).toBe(true);
+		expect(connection.isLive()).toBe(false);	
    });
+
+
 
 
 
