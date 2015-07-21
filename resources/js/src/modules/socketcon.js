@@ -6,12 +6,19 @@ import Logger from './logger';
  * 
  * This class creates websocket connection to connect to server side in real-time
  */
-class Connection extends Logger {
+class SocketCon extends Logger {
 	
 	/**
 	 * Constructor
+	 *
+	 * @param {window.Console} 
+	 * @param {WebSocket}
+	 * @param {String}
+	 * @param {String} host name
+	 * @param {String} port number 
+	 * @param {String} protocol name
 	 */
-	constructor(console, driver, hostname, port, path) {
+	constructor(console, driver, hostname, port, path, events) {
 		
 		super(console);			
 		
@@ -22,6 +29,8 @@ class Connection extends Logger {
 		
 		// connection to server side
 		this.makeConnection();
+
+		this.events		= events;
 	}
 	
 	/**
@@ -43,23 +52,33 @@ class Connection extends Logger {
 
 			super.sendError('Connection is not estabished! ' + Error);
 		}
-
 	}
 	
 	/**
 	 * To adds default event on current connection
+	 *
+	 * @return void
 	 */
 	addsDefaultEventOnConnection() {
 
-		this.connection.onerror = function() {
+		this.connection.onerror		= () => {
 		   
 			super.sendError('The connection is broken');
 		};
 
-		this.connection.onopen	= function() {
+		this.connection.onopen		= () =>  {
 		   
 			super.sendInfo('The connection is established..'); 
 		};
+
+		this.connection.onmessage	= (e) => {
+
+			var jsonObj		= JSON.parse(e.data);
+
+			var fireName	= 'stat.' + jsonObj.Name;
+
+			this.fireEventOnEventServer(fireName, jsonObj.Value);
+		};	
 	}
 	
 	/**
@@ -108,7 +127,44 @@ class Connection extends Logger {
 		return ! this.isLive();
 	}
 
+	/**
+	 * Add Event to event server
+	 *
+	 * @param {String||Array}	event
+	 * @param {Object}			obj
+	 */ 
+	addEventOnEventServer(event, obj) {
+
+		if(event.isArray()) {
+
+			this.events.many(event,obj);
+			
+			return;
+		}
+
+		this.events.on(event, obj);
+	}
+
+	/**
+	 * To fire event
+	 *
+	 * @param {String|Array}	e
+	 * @param {Object}			data
+	 */
+	fireEventOnEventServer(e, data) {
+
+		if (this.events  === null || typeof this.events === 'undefined') {
+
+			throw new Error('It looks EventEmitter2 server is not injected this object');
+
+		}
+
+		this.events.emit(e, data);
+	}
+
+	
+
 
 }
 
-module.exports = Connection;
+module.exports = SocketCon;
