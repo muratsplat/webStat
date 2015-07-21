@@ -26,7 +26,7 @@ describe('SocketCon Simmple Test', () => {
 
 		connection  = new SocketCon(console);
 		// It was no arguments for websocket driver,
-		// expecting calling error methos to send error message to client
+		// expecting calling error method to send error message to client
 		expect(console.error).toHaveBeenCalled();
 	});
 	
@@ -64,17 +64,25 @@ describe('SocketCon Simmple Test', () => {
 			onopen		: null,
 			onmessage	: null,
 		};
-
 		var  server = new EventEmitter.EventEmitter2();
+
+		var spy = {
+			
+			getFoo : () => {},
+		};
+
+		spyOn(spy, 'getFoo');
 
 		server.on('stat.echo', (data) => {
 	
-			expect('test').toEqual(data);
+			data.getFoo();
 		});
 
 		connection	= new SocketCon(console, driver, hostname, port, path, server);
 
-		connection.fireEventOnEventServer('stat.echo', 'test');
+		connection.fireEventOnEventServer('stat.echo', spy);
+
+		expect(spy.getFoo).toHaveBeenCalled();
 
 	});
 
@@ -98,16 +106,8 @@ describe('SocketCon Simmple Test', () => {
 			fail('Expects  an exception! ');
 		} catch (e) {
 
-		}			
-
-		
+		}	
 
 	});
-
-
-
-
-
-
 
 });

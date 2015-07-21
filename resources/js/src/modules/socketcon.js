@@ -61,14 +61,20 @@ class SocketCon extends Logger {
 	 */
 	addsDefaultEventOnConnection() {
 
+		var state = this.getReadyState();
+
 		this.connection.onerror		= () => {
 		   
-			super.sendError('The connection is broken');
+			super.sendError('The connection is broken');	
+				
+			this.fireEventOnEventServer('stat.status', state);
 		};
 
 		this.connection.onopen		= () =>  {
 		   
-			super.sendInfo('The connection is established..'); 
+			super.sendInfo('The connection is established.');
+			
+			this.fireEventOnEventServer('stat.status', state);					 
 		};
 
 		this.connection.onmessage	= (e) => {
@@ -156,15 +162,10 @@ class SocketCon extends Logger {
 		if (this.events  === null || typeof this.events === 'undefined') {
 
 			throw new Error('It looks EventEmitter2 server is not injected this object');
-
 		}
 
 		this.events.emit(e, data);
 	}
-
-	
-
-
 }
 
 module.exports = SocketCon;
