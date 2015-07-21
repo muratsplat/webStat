@@ -1,38 +1,51 @@
 /**
  * Test file SocketCon module
  */
-
 import SocketCon from '../../modules/socketcon.js';
 import * as EventEmitter  from 'eventemitter2'; 
 
-describe('SocketCon Simmple Test', () => {
+describe('SocketCon Test', () => {
 
-	var console, driver, hostname, port, path, connection, webdrive, eventServer;
+	var win, path, eventServer, _console;
 	
 	beforeEach(() => {
 
-		console= {
+		 _console = {
+				error	: (msg) => {},
+				info	: (msg) => {},
+				log		: (msg) => {},
+		};
 
-			error	: (msg) => {},
-			info	: (msg) => {},
-			log		: (msg) => {},	
-		};				
+		win = {			
+			console: _console,
+
+			location: {
+				hostname	: 'localhost',
+				port		: '80',
+			},
+
+			WebSocket : () => {
+
+				throw new Error('Test');			
+			},				
+			
+		};
 
 	});
 	   	
 	it('Simple Constructor Test', () => {
 		
-		spyOn(console, 'error');
+		var connection  = new SocketCon(win, path, eventServer);
+		
+		expect(connection.getDriver()).toEqual(win.WebSocket);
 
-		connection  = new SocketCon(console);
-		// It was no arguments for websocket driver,
-		// expecting calling error method to send error message to client
-		expect(console.error).toHaveBeenCalled();
+		expect(connection.getConnectionArgs()).toEqual('ws://localhost:80/ws');
+		
 	});
 	
 	it('With not valid websocket driver', () => {
 	
-		connection  = new SocketCon(console,driver, hostname, port, path );
+		var connection  = new SocketCon(win, path );
 
 		expect(connection.getReadyState()).toBe(null);
 		expect(connection.isClosed()).toBe(true);
@@ -41,29 +54,17 @@ describe('SocketCon Simmple Test', () => {
 
 
 	it('Simple Event Server Injecting Test' , () => {
-		
-		driver = () => {};
-		driver.prototype = {
-
-			onerror		: null,
-			onopen		: null,
-			onmessage	: null,
-		};
-		
+				
 		var  server = new EventEmitter.EventEmitter2();
+		
+		var connection  = new SocketCon(win, path, server);
 
 	});
 
 
 	it('Event Server Firing' , () => {
 		
-		driver = () => {};
-		driver.prototype = {
-
-			onerror		: null,
-			onopen		: null,
-			onmessage	: null,
-		};
+	
 		var  server = new EventEmitter.EventEmitter2();
 
 		var spy = {
@@ -78,7 +79,7 @@ describe('SocketCon Simmple Test', () => {
 			data.getFoo();
 		});
 
-		connection	= new SocketCon(console, driver, hostname, port, path, server);
+		var connection	= new SocketCon(win,  path, server);
 
 		connection.fireEventOnEventServer('stat.echo', spy);
 
@@ -88,17 +89,9 @@ describe('SocketCon Simmple Test', () => {
 
 	it('Event Server Firing with invalid event server object' , () => {
 		
-		driver = () => {};
-		driver.prototype = {
-
-			onerror		: null,
-			onopen		: null,
-			onmessage	: null,
-		};
-
 		var  server = null; // invalid server !!;
 
-		connection	= new SocketCon(console, driver, hostname, port, path, server);
+		var	connection	= new SocketCon(win, path, server);
 
 		try {
 			connection.fireEventOnEventServer('stat.echo', 'test');

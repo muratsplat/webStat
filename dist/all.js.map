@@ -1,1 +1,0 @@
-{"version":3,"sources":["app.js"],"names":[],"mappings":";;;;;;;;;;;;;IASM,GAAG,YAAH,GAAG;wBAAH,GAAG","file":"all.js","sourcesContent":["/* \n * Simle WebSocket Client App \n *\n * Copyright (C) 2014-2015 Murat Ödünç\n *\n * @author murat.asya@gmail.com\n * @license GPL 3.0\n */\n\nclass App {\n\n}\n\n"],"sourceRoot":"/source/"}

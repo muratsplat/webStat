@@ -11,26 +11,52 @@ class SocketCon extends Logger {
 	/**
 	 * Constructor
 	 *
-	 * @param {window.Console} 
-	 * @param {WebSocket}
-	 * @param {String}
-	 * @param {String} host name
-	 * @param {String} port number 
-	 * @param {String} protocol name
+	 * @param {window}			win
+	 * @param {String}			path 
+	 * @param {EventEmitter2}	events
 	 */
-	constructor(console, driver, hostname, port, path, events) {
+	constructor(win, path, events) {
 		
-		super(console);			
-		
-		this.hostname	= hostname || 'localhost';
-		this.port		= port || 80;
-		this.path		= path || 'ws';
-		this.driver		= driver || {} ;
+		super(win.console);
+
+		this._window	= win || {};
+
+		this.path		= path || 'ws';		
 		
 		// connection to server side
 		this.makeConnection();
 
 		this.events		= events;
+	}
+
+	/**
+	 * To get socket driver
+	 *
+	 * @return {Object}  the object must implements Standart WebSocket 
+	 */
+	getDriver() {
+
+		var defSocket = this._window.WebSocket;
+
+		var altSocket = this.socket;
+
+		return  altSocket || defSocket;
+	}
+	
+	/**
+	 * To set websocket driver
+	 *
+	 * @param {Object} websocket driver
+	 * @return void
+	 */
+	setSocketDriver(driver) {
+
+		if (driver === null || typeof driver === 'undefined') {
+
+			throw new TypeError('Invalid argument!');
+		}
+
+		this.socket = driver;
 	}
 	
 	/**
@@ -40,11 +66,12 @@ class SocketCon extends Logger {
 	 */
 	makeConnection() {
 
-		var args = this.getConnectionArgs();
-		
+		var args	= this.getConnectionArgs();		
+		var driver	= this.getDriver();
+
 		try {
 			
-			this.connection = new this.driver(args);
+			this.connection =  new driver(args);
 			
 			this.addsDefaultEventOnConnection();
 
@@ -83,7 +110,7 @@ class SocketCon extends Logger {
 
 			var fireName	= 'stat.' + jsonObj.Name;
 
-			this.fireEventOnEventServer(fireName, jsonObj.Value);
+			this.fireEventOnEventServer(fireName, jsonObj);
 		};	
 	}
 	
@@ -93,8 +120,29 @@ class SocketCon extends Logger {
 	 */
 	getConnectionArgs() {
 
-		return 'ws://' + this.hostname + ":" + this.port + "/" + this.path;
+		return 'ws://' + this.getHostname() + ":" + this.getPort() + "/" + this.path;
 	}
+
+	/**
+	 * To get hostname of current Window object
+	 *
+	 * @return {String}
+	 */
+	getHostname() {
+
+		return this._window.location.hostname || 'localhost';
+	
+	}
+
+	/**
+	 * To get port number of current Window Object
+	 *
+	 * @return {string}
+	 */
+	getPort() {
+		return this._window.location.port || '80';
+	}
+
 
 	/**
 	 * To get the readyState property of injected websocket object
