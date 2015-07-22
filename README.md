@@ -50,10 +50,9 @@ Dependencies
  
 Todos
 ----
-* pinger and ponger features to client side
-* pinger and ponger features to server side +1
+* pinger and ponger features 
 * login and authorization to limit access
-* simple test methods +1;
+* simple test methods 
 
 Thanks To
 ---------
