@@ -52,5 +52,5 @@ Thanks To
 
 License
 --------
-Copyright (C) 2014 Murat ÖDÜNÇ  GPLv3
+Copyright (C) 2014-2015 Murat ÖDÜNÇ  GPLv3
 
