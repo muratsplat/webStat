@@ -3,12 +3,11 @@ webStat
 
 This app simply is web service. This service gives the status of CPU(s) and Memory of system which is the app works on.
 
-
 I'm new in Go Language and this library is my first app in go. I want to improve my go skils by writing go code more and more.
 
-This app was written by Go language and JavaScipt. It is used any Js library such as Jquery on the client side. 
+This app was written by Go language and JavaScipt. 
 
-The app has two main structer. These are a server is works on server side  and a client that works on browser. The server side is written in Go language. The client side is written in JavaScipt  and it is so simply.
+The app has two main structer. These are a server is works on server side  and a client that works on browser. The server side is written in Go language. The client side is written in JavaScript(ES6).
 
 The app shows system status which is server side.
 
@@ -27,6 +26,10 @@ $ go get github.com/gorilla/websocket
 
 $ cd webStat
 
+$ npm install
+
+$ gulp
+
 $ go build stat.go
 
 $ ./stat
@@ -38,19 +41,25 @@ ScreenShot
 ----------
 ![example](https://github.com/muratsplat/webStat/blob/master/screenshots/webstat.gif)
 
-
+Dependencies
+------------
+* Go Language Offical Tools
+* Git
+* NodeJs
+* GulpJS
+ 
 Todos
 ----
 * pinger and ponger features to client side
-* pinger and ponger features to server side
+* pinger and ponger features to server side +1
 * login and authorization to limit access
-* simple test methods
+* simple test methods +1;
 
 Thanks To
 ---------
-[Gorilla Team](https://github.com/gorilla/websocket) for websocket
+A lot of Open Source tools, programs, and library is used in the project. Thank you for all of it..
 
 License
 --------
-Copyright (C) 2014 Murat ÖDÜNÇ  GPLv3
+Copyright (C) 2014-2015 Murat ÖDÜNÇ  GPLv3
 
