@@ -26,9 +26,9 @@ $ go get github.com/gorilla/websocket
 
 $ cd webStat
 
-$ npm install // to install all JavaScipt dependencies
+$ npm install
 
-$ gulp // to build assets
+$ gulp
 
 $ go build stat.go
 
