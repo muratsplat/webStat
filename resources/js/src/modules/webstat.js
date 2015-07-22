@@ -68,12 +68,65 @@ class WebStat extends Log {
 	 */ 
 	addDefaultListenerOn() {
 
-		this.eventServer.on('stat.*', (e) => {
-
+		this.addListener('webstat.stats.*', (e) => {
+		
 			// it likes as JSON 
 			// {'Name':'cpu', 'Value': '12'}
 			this.callRenders(e.Name, e.Value);
 		});
+
+		this.addListener('webstat.connection', (e) => {
+			
+			/**
+			 * WebSocket API
+			 * https://developer.mozilla.org/en-US/docs/Web/API/WebSocket
+			 *
+			 * -------------------------------------------------------------
+			 * Constant	Value	Description
+			 * CONNECTING	0	The connection is not yet open.
+			 * OPEN	1	The connection is open and ready to communicate.
+			 * CLOSING	2	The connection is in the process of closing.
+			 * CLOSED	3	The connection is closed or couldn't be opened.
+			 */
+			var msg = null;
+
+			switch (e) {
+
+				case 0 : 
+					msg = 'Connecting...';
+					break;
+				case 1 :
+					msg	= 'Online';
+					break;
+				case 2 :
+					msg = 'Current connection is closing..';
+					break;
+				case 3 :
+					msg = 'Closed';
+					break;
+				default:
+					msg= 'Unknown';
+			}
+
+			var data =  {
+				code : e,
+				msg  : msg,
+			};
+
+			this.callRenders('conStat',data);
+		});
+	}
+	
+	/**
+	 * To add listener
+	 *
+	 * @param {String|Array}	listener
+	 * @param {Function}		event
+	 * @return void
+	 */ 
+	addListener(listener, event) {
+
+		this.eventServer.on(listener, event);
 	}
 
 	/**

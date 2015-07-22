@@ -86,29 +86,33 @@ class SocketCon extends Logger {
 	 *
 	 * @return void
 	 */
-	addsDefaultEventOnConnection() {
-
-		var state = this.getReadyState();
+	addsDefaultEventOnConnection() {		
 
 		this.connection.onerror		= () => {
+
+            var state = this.getReadyState();
 		   
 			super.sendError('The connection is broken');	
 				
-			this.fireEventOnEventServer('stat.status', state);
+			this.fireEventOnEventServer('webstat.connection', state);
 		};
 
 		this.connection.onopen		= () =>  {
+
+            var state = this.getReadyState();
 		   
 			super.sendInfo('The connection is established.');
 			
-			this.fireEventOnEventServer('stat.status', state);					 
+			this.fireEventOnEventServer('webstat.connection', state);					 
+
+			this.startTimer();
 		};
 
 		this.connection.onmessage	= (e) => {
 
 			var jsonObj		= JSON.parse(e.data);
 
-			var fireName	= 'stat.' + jsonObj.Name;
+			var fireName	= 'webstat.stats.' + jsonObj.Name;
 
 			this.fireEventOnEventServer(fireName, jsonObj);
 		};	
@@ -214,6 +218,39 @@ class SocketCon extends Logger {
 
 		this.events.emit(e, data);
 	}
+	
+	/**
+	 * To call methods which should do it firstly
+	 *
+	 * @return void
+	 */
+	startTimer() {
+
+		if (this.timer) { this._window.clearInterval(this.timer); }
+		
+		this.timer = this._window.setInterval(this.checkConnection.bind(this), 3000);
+	}
+	
+	/**
+	 * To check current connction. If the connection is losted, fire event
+	 * and send a message to connsole
+	 *
+	 * @return void
+	 */
+	checkConnection() {
+
+		if (this.isClosed()) {
+
+			var state = this.getReadyState();
+
+			this.fireEventOnEventServer('webstat.connection', state);
+
+			var msg = 'Current connection is lost!' + ' You can reload page to estabish a connection.';
+			
+			this.sendInfo(msg);
+		}
+	}
+
 }
 
 module.exports = SocketCon;

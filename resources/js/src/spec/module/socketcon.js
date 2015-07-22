@@ -27,7 +27,11 @@ describe('SocketCon Test', () => {
 			WebSocket : () => {
 
 				throw new Error('Test');			
-			},				
+			},
+			
+			setInterval : () => {
+
+			},		
 			
 		};
 
@@ -100,7 +104,6 @@ describe('SocketCon Test', () => {
 		} catch (e) {
 
 		}	
-
 	});
 
 });
