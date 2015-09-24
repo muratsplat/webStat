@@ -33,26 +33,27 @@ import WebStat from './modules/webstat.js';
 
     // Status render callback 
 	var statusRender = (e) => {
+    
+	   	var refs = window.document.getElementById("conStat");
+		
+        refs.innerHTML	=  e.msg; // 'Closed', 'Online'...
 
-        var refs = window.document.getElementById("conStat");
+		var color = '';
 
-        var on = "Online";
+		switch(e.code) {
 
-        refs.innerHTML	=  on;
-		refs.style.color= 'chartreuse';
-	};
+			case 0 :
+			   	color = 'yellow';
+				break;
+			case 1 : 
+				color = 'chartreuse';
+				break;
+			default:
+				color = 'red';
+		}
 
-	 // Status render timer  callback 
-	setInterval((e) => {
-
-        var refs = window.document.getElementById("conStat");
-
-        var on = "Offline";
-
-        refs.innerHTML =  on;
-		refs.style.color = 'red';
-	
-	},3000);	
+		refs.style.color= color;
+	};	
 
 	var path		= 'ws';
 	var eventSrvOpts= {wildcard: true,maxListeners: 10};
@@ -62,7 +63,7 @@ import WebStat from './modules/webstat.js';
 	var webstat		= new WebStat(win, live, eventServer);
 
 	webstat.addRenderMethod('cpu', cpuRender);
-	webstat.addRenderMethod('cpu', statusRender);
+	webstat.addRenderMethod('conStat', statusRender);
 
 	webstat.addRenderMethod('mem', memRender);
 
