@@ -5,14 +5,12 @@
 package main
 
 import (
+	"github.com/gorilla/websocket"
 	"github.com/muratsplat/highLevelStat"
-	"io"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
-
-	"github.com/gorilla/websocket"
 )
 
 // source: https://github.com/gorilla/websocket/blob/master/examples/chat/conn.go
@@ -57,7 +55,7 @@ var (
 	cssPath       string = "/assets/css/style.css"
 	webSocketPath string = "/ws"
 
-	timeOfRangeStat time.Duration = time.Millisecond * 500 // 1 second
+	timeOfRangeStat time.Duration = time.Duration(100 * time.Millisecond) // 0.5 second
 )
 
 // Types Of Message
@@ -68,7 +66,7 @@ const (
 // System CPU(s) Status Updater
 func cpuUpdater(c chan<- Message) {
 	// setting delay
-	highlevelstat.SetTimeOfRangeForCpuStat(timeOfRangeStat / 2)
+	highlevelstat.SetTimeOfRangeForCpuStat(timeOfRangeStat)
 
 	var msg Message
 
@@ -78,9 +76,9 @@ func cpuUpdater(c chan<- Message) {
 
 	for {
 
-		cpu := highlevelstat.NewCpuUsage()
+		var status highlevelstat.SystemStatus
 
-		msg.Value = float32ToString(cpu.CpuUsage)
+		msg.Value = float32ToString(status.GetCpuUsage().CpuUsage)
 
 		msg.Time = time.Now().Unix()
 		// sending a message that includes cpu status
@@ -100,18 +98,20 @@ func memUpdater(c chan<- Message) {
 
 	msg.Name = "mem"
 
+	//	duration := time.Duration(timeOfRangeStat)
+
 	for {
 
-		mem := highlevelstat.NewMemInfo()
+		memInfo := highlevelstat.GetMemInfo()
 
-		msg.Value = float32ToString(mem.UsedMemForHuman())
+		msg.Value = float32ToString(memInfo.GetUsedMemForHuman())
 
 		msg.Time = time.Now().Unix()
 		// sending the message to channel
 		log.Println(msg)
 		c <- msg
 
-		time.Sleep(timeOfRangeStat)
+		time.Sleep(timeOfRangeStat * time.Millisecond)
 	}
 
 }
@@ -206,8 +206,10 @@ func websocketHandler(w http.ResponseWriter, r *http.Request) {
 	conn, err := upgrader.Upgrade(w, r, nil)
 
 	if err != nil {
+		if _, ok := err.(websocket.HandshakeError); !ok {
 
-		log.Println(err)
+			log.Println(err)
+		}
 
 		return
 	}
@@ -262,8 +264,4 @@ func jsMap(w http.ResponseWriter, r *http.Request) {
 func cssHander(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "resources/assets/css/style.css")
 	log.Print("style.css is called")
-}
-
-func HelloServer(w http.ResponseWriter, req *http.Request) {
-	io.WriteString(w, "hello, world!\n")
 }
